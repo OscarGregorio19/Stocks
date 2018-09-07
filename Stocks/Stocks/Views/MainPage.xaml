@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Stocks"
+             x:Class="Stocks.MainPage">
+
+    <ContentPage.Resources>
+        <Style x:Key="EstiloParaLasEtiquetas" TargetType="Label">
+            <Setter Property="HorizontalOptions" Value="End"/>
+            <Setter Property="VerticalOptions" Value="Center"/>
+            <Setter Property="TextColor">
+                <Setter.Value>
+                    <OnPlatform x:TypeArguments="Color" iOS="Red" Android="Green"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="EstilosParaLosBotones" TargetType="Button">
+            <Setter Property="BorderColor" Value="Red"/>
+            <Setter Property="BorderWidth" Value="4"/>
+            <Setter Property="TextColor">
+                <Setter.Value>
+                    <OnPlatform x:TypeArguments="Color" iOS="Red" Android="Green"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="EstiloParaLosEntry" TargetType="Entry">
+            <Setter Property="TextColor" Value="Red"/>
+            <Setter Property="BackgroundColor" Value="White"/>
+        </Style>
+    </ContentPage.Resources>
+    
+    <Grid BackgroundColor="Black">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label 
+            Text="Symbol: " 
+            Style="{StaticResource EstiloParaLasEtiquetas}"/>
+        <Entry 
+            Text="{Binding Symbol}"
+            VerticalOptions="CenterAndExpand"
+            Grid.Column="1"
+            Style="{StaticResource EstiloParaLosEntry}">
+        </Entry>
+        <StackLayout Grid.Row="1" Grid.ColumnSpan="2" Padding="10,0,10,0">
+            <Button
+                Command="{Binding ConsultarPreciosCommand}"
+                Text="Get Latest Year Prices"/>
+        </StackLayout>
+        
+
+        <!--Label Text="Uno" 
+           VerticalOptions="CenterAndExpand"
+           Grid.Column="1"
+           Style="{StaticResource EstiloParaLasEtiquetas}"/>
+
+        <Label Text="Dos" 
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" 
+           Grid.Row="1" Grid.Column="1"
+           Style="{StaticResource EstiloParaLasEtiquetas}"/>
+
+        <Label Text="Tres" 
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" 
+           Grid.Row="2" Grid.Column="1"
+           Style="{StaticResource EstiloParaLasEtiquetas}"/>
+
+        <Button
+            Text="Click me!"
+            Grid.Row="3"
+            Grid.ColumnSpan="2"
+            Style="{StaticResource EstilosParaLosBotones}"
+            Clicked="Button_Clicked"
+         /-->
+    </Grid>
+
+</ContentPage>
