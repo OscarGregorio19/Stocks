@@ -1,33 +1,16 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using System.Windows.Input;
+using Stocks.Services.Interfaces;
 
 namespace Stocks.ViewModels
 {
     public class MainViewModel: ViewModelBase
     {
+        private readonly IStockPricesService stockPricesService;
+
         private string symbol;
-        public MainViewModel()
+        public string Symbol
         {
-            Symbol = "Obligame perro xD";
-            ConsultarPreciosCommand = new RelayCommand(() =>
-            {
-                System.Diagnostics.Debug.WriteLine("Symbol = " + Symbol);
-                Symbol = "Oscar Gregorio";
-                prices = InvokeWebService();
-            });
-        }
-
-        private decimal[] InvokeWebService()
-        {
-            return null;
-        }
-
-        public string Symbol{
             get { return symbol; }
             set
             {
@@ -35,7 +18,7 @@ namespace Stocks.ViewModels
             }
         }
 
-        public decimal[] prices;
+        private decimal[] prices;
         public decimal[] Prices
         {
             get { return prices; }
@@ -49,6 +32,17 @@ namespace Stocks.ViewModels
         {
             get;
             set;
+        }
+
+        public MainViewModel(IStockPricesService stockPricesService)
+        {
+            this.stockPricesService = stockPricesService;
+            ConsultarPreciosCommand = new RelayCommand(ConsultarPrecios);
+        }
+
+        private void ConsultarPrecios()
+        {
+            Prices = stockPricesService.GetPrices(Symbol);
         }
 
         /*public event PropertyChangedEventHandler PropertyChanged;

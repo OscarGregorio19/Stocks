@@ -14,7 +14,7 @@ namespace Stocks
         {
             InitializeComponent();
 
-            BindingContext = new MainViewModel();
+            BindingContext = new MainViewModel(null);
         }
 
         private void Button_Clicked(object sender, EventArgs e)
