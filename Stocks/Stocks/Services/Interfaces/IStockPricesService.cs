@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Stocks.Models;
+using System;
+using System.Threading.Tasks;
+
 namespace Stocks.Services.Interfaces
 {
-    public interface IStockPricesService
+    public interface IStockInfoService
     {
-        decimal[] GetPrices(string symbol);
+        Task<StocksInfo[]> GetStocksInfo(string symbol);
     }
 }

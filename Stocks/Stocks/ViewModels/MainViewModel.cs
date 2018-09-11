@@ -1,12 +1,17 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using Stocks.Models;
+using Stocks.Operations;
 using Stocks.Services.Interfaces;
+using System;
+using System.Threading.Tasks;
 
 namespace Stocks.ViewModels
 {
     public class MainViewModel: ViewModelBase
     {
-        private readonly IStockPricesService stockPricesService;
+        private readonly IStockInfoService stockInfoService;
+        private readonly ILogger logger;
 
         private string symbol;
         public string Symbol
@@ -18,13 +23,23 @@ namespace Stocks.ViewModels
             }
         }
 
-        private decimal[] prices;
-        public decimal[] Prices
+        private string status;
+        public string Status
         {
-            get { return prices; }
+            get { return status; }
             set
             {
-                Set(nameof(Prices), ref prices, value);
+                Set(nameof(Status), ref status, value);
+            }
+        }
+
+        private StocksInfo[] stocksInfo;
+        public StocksInfo[] StocksInfo
+        {
+            get { return stocksInfo; }
+            set
+            {
+                Set(nameof(StocksInfo), ref stocksInfo, value);
             }
         }
 
@@ -34,15 +49,27 @@ namespace Stocks.ViewModels
             set;
         }
 
-        public MainViewModel(IStockPricesService stockPricesService)
+        public MainViewModel(IStockInfoService stockInfoService, ILogger logger)
         {
-            this.stockPricesService = stockPricesService;
-            ConsultarPreciosCommand = new RelayCommand(ConsultarPrecios);
+            this.stockInfoService = stockInfoService;
+            this.logger = logger;
+            ConsultarPreciosCommand = new RelayCommand(async () => await ConsultarPreciosAsync());
         }
 
-        private void ConsultarPrecios()
+        private async Task ConsultarPreciosAsync()
         {
-            Prices = stockPricesService.GetPrices(Symbol);
+            Status = "Operacion en progreso ...";
+            try
+            {
+                StocksInfo = await stockInfoService.GetStocksInfo(Symbol);
+                Status = "Done!";
+            } catch(Exception ex)
+            {
+                //Minimo hay que hacer logging
+                Status = "Ooops!";
+                logger.Error(ex);
+            }
+            
         }
 
         /*public event PropertyChangedEventHandler PropertyChanged;

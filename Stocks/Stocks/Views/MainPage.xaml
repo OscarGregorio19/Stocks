@@ -31,6 +31,7 @@
     
     <Grid BackgroundColor="Black">
         <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -41,15 +42,23 @@
         </Grid.ColumnDefinitions>
 
         <Label 
+            Text="{Binding Status}" 
+            Style="{StaticResource EstiloParaLasEtiquetas}"
+            Grid.ColumnSpan="2"
+            HorizontalTextAlignment="Center"/>
+        <Label 
             Text="Symbol: " 
-            Style="{StaticResource EstiloParaLasEtiquetas}"/>
+            Style="{StaticResource EstiloParaLasEtiquetas}"
+            Grid.Row="1"
+            />
         <Entry 
             Text="{Binding Symbol}"
             VerticalOptions="CenterAndExpand"
+            Grid.Row="1"
             Grid.Column="1"
             Style="{StaticResource EstiloParaLosEntry}">
         </Entry>
-        <StackLayout Grid.Row="1" Grid.ColumnSpan="2" Padding="10,0,10,0">
+        <StackLayout Grid.Row="2" Grid.ColumnSpan="2" Padding="10,0,10,0">
             <Button
                 Command="{Binding ConsultarPreciosCommand}"
                 Text="Get Latest Year Prices"/>

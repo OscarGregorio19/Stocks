@@ -14,7 +14,8 @@ namespace Stocks
         {
             InitializeComponent();
 
-            BindingContext = new MainViewModel(null);
+            //BindingContext = new MainViewModel(new Services.Layer.FakeStockPricesService());
+            BindingContext = App.Locator.Main;
         }
 
         private void Button_Clicked(object sender, EventArgs e)

@@ -8,6 +8,19 @@ namespace Stocks
 {
     public partial class App : Application
     {
+        static Locator locator;
+
+        public static Locator Locator
+        {
+            get {
+                if (locator == null) {
+                    locator = new Locator();
+                }
+
+                return locator;
+            }
+        }
+
         public App()
         {
             InitializeComponent();
