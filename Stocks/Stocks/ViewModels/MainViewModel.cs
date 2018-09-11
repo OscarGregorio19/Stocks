@@ -1,17 +1,29 @@
-﻿using GalaSoft.MvvmLight;
+﻿using System;
+using System.Threading.Tasks;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Stocks.Models;
 using Stocks.Operations;
 using Stocks.Services.Interfaces;
-using System;
-using System.Threading.Tasks;
 
 namespace Stocks.ViewModels
 {
-    public class MainViewModel: ViewModelBase
+    public class MainViewModel : ViewModelBase
     {
-        private readonly IStockInfoService stockInfoService;
+        private readonly IStocksInfoService stocksInfoService;
         private readonly ILogger logger;
+
+        public bool IsBusy
+        {
+            get;
+            set;
+        }
+
+        public bool HasError
+        {
+            get;
+            set;
+        }
 
         private string symbol;
         public string Symbol
@@ -49,37 +61,35 @@ namespace Stocks.ViewModels
             set;
         }
 
-        public MainViewModel(IStockInfoService stockInfoService, ILogger logger)
+        public MainViewModel(IStocksInfoService stocksInfoService, ILogger logger)
         {
-            this.stockInfoService = stockInfoService;
+            this.stocksInfoService = stocksInfoService;
             this.logger = logger;
-            ConsultarPreciosCommand = new RelayCommand(async () => await ConsultarPreciosAsync());
+
+            ConsultarPreciosCommand = new RelayCommand(async () => await ConsultarPrecios());
         }
 
-        private async Task ConsultarPreciosAsync()
+        private async Task ConsultarPrecios()
         {
-            Status = "Operacion en progreso ...";
+            Status = "Operación en progreso...";
+
             try
             {
-                StocksInfo = await stockInfoService.GetStocksInfo(Symbol);
-                Status = "Done!";
-            } catch(Exception ex)
+                StocksInfo = await stocksInfoService.GetStocksInfo(Symbol);
+                if (StocksInfo == null)
+                {
+                    Status = $"Símbolo '{Symbol}' no encontrado";
+                }
+                else
+                {
+                    Status = "Done!";
+                }
+            }
+            catch (Exception ex)
             {
-                //Minimo hay que hacer logging
-                Status = "Ooops!";
+                Status = "Servicio no disponible";
                 logger.Error(ex);
             }
-            
         }
-
-        /*public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            if(PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }*/
     }
 }

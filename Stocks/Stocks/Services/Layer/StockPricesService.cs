@@ -1,16 +1,23 @@
-﻿using Newtonsoft.Json;
-using Stocks.Models;
-using Stocks.Services.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Stocks.Models;
+using Stocks.Operations;
+using Stocks.Services.Interfaces;
 
 namespace Stocks.Services.Layer
 {
-    public class StockPricesService : IStockInfoService
+    public class StockPricesService : IStocksInfoService
     {
+        private readonly ILogger logger;
+
+        public StockPricesService(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
         public async Task<StocksInfo[]> GetStocksInfo(string symbol)
         {
             var httpClient = default(HttpClient);
@@ -19,21 +26,38 @@ namespace Stocks.Services.Layer
                 Scheme = "https",
                 Host = "stockquoteprice.azurewebsites.net",
                 Path = "api/price",
-                Query = $"symbol={symbol}" //string interpolation
+                Query = $"symbol={symbol}"
             };
-           
+
             try
             {
                 httpClient = new HttpClient();
+                httpClient.Timeout = TimeSpan.FromSeconds(3);
+
                 var response = await httpClient.GetAsync(uriBuilder.Uri);
-                var json = await response.Content.ReadAsStringAsync();
-                var stocksInfo = JsonConvert.DeserializeObject<StocksInfo[]>(json);
+                var stocksInfo = default(StocksInfo[]);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    stocksInfo = JsonConvert.DeserializeObject<StocksInfo[]>(json);
+                }
+                else if (response.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    throw new InvalidOperationException();
+                }
 
                 return stocksInfo;
             }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                throw;
+            }
             finally
             {
-                if(httpClient != null)
+                if (httpClient != null)
                 {
                     httpClient.Dispose();
                 }

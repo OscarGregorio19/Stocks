@@ -1,13 +1,14 @@
-﻿using Stocks.Models;
-using Stocks.Services.Interfaces;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+
+using Stocks.Models;
+using Stocks.Services.Interfaces;
 
 namespace Stocks.Tests.Mocks
 {
-    public class MockStockPricesService : IStockInfoService
+    public class MockStocksInfoService : IStocksInfoService
     {
-        public bool GetStockRefactor
+        public bool GetStockInfonvoked
         {
             get;
             private set;
@@ -15,13 +16,18 @@ namespace Stocks.Tests.Mocks
 
         public Task<StocksInfo[]> GetStocksInfo(string symbol)
         {
-            GetStockRefactor = true;
+            GetStockInfonvoked = true;
 
             if (symbol == "MSFT")
             {
                 var stocksInfo = new StocksInfo[5];
                 return Task.FromResult(stocksInfo);
-            } else
+            }
+            else if (symbol == "GOOG")
+            {
+                return Task.FromResult<StocksInfo[]>(null);
+            }
+            else
             {
                 throw new InvalidOperationException();
             }

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Stocks.Services.Interfaces
 {
-    public interface IStockInfoService
+    public interface IStocksInfoService
     {
         Task<StocksInfo[]> GetStocksInfo(string symbol);
     }

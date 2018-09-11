@@ -14,7 +14,7 @@ namespace Stocks
         static Locator()
         {
             SimpleIoc.Default.Register<MainViewModel>();
-            SimpleIoc.Default.Register<IStockInfoService, StockPricesService>();
+            SimpleIoc.Default.Register<IStocksInfoService, StockPricesService>();
             SimpleIoc.Default.Register<ILogger, DevelopmentLogger>();
         }
 

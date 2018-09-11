@@ -3,45 +3,64 @@ using Stocks.Test.Mocks;
 using Stocks.Tests.Mocks;
 using Stocks.ViewModels;
 
-namespace Stock.Tests
+namespace Stocks.Tests
 {
-    [TestFixture]
-    public class MainViewModelService
+    [TestFixture()]
+    public class MainViewModelTests
     {
-        [Test]
+        [Test()]
         public void ShouldSucceed()
         {
-            //Arrange
+            // Arrange
             var symbol = "MSFT";
-            var mockStockInfoService = new MockStockPricesService();
+            var mockStocksInfoService = new MockStocksInfoService();
             var mockLogger = new MockLogger();
 
-            //Act
-            var vm = new MainViewModel(mockStockInfoService, mockLogger);
+            // Act
+            var vm = new MainViewModel(mockStocksInfoService, mockLogger);
             vm.Symbol = symbol;
             vm.ConsultarPreciosCommand.Execute(null);
 
-            //Assert
+            // Assert
             Assert.IsNotNull(vm.StocksInfo);
             Assert.AreEqual("Done!", vm.Status);
+            Assert.IsTrue(mockStocksInfoService.GetStockInfonvoked);
+        }
+
+        [Test()]
+        public void ShouldDisplayNotFoundWhenSymbolDoesNotExist()
+        {
+            // Arrange
+            var symbol = "GOOG";
+            var mockStocksInfoService = new MockStocksInfoService();
+            var mockLogger = new MockLogger();
+
+            // Act
+            var vm = new MainViewModel(mockStocksInfoService, mockLogger);
+            vm.Symbol = symbol;
+            vm.ConsultarPreciosCommand.Execute(null);
+
+            // Assert
+            Assert.AreEqual($"Símbolo '{symbol}' no encontrado", vm.Status);
+            Assert.IsTrue(mockStocksInfoService.GetStockInfonvoked);
         }
 
         [Test]
-        public void ShouldLogErrorWhenStockPricesServiceFails()
+        public void ShouldDisplayServicioNoDisponibleCuandoElBackendSeChocolatee()
         {
-            //Arrange
-            var symbol = "Hola culeros!";
-            var mockStockInfoService = new MockStockPricesService();
+            // Arrange
+            var symbol = "ABCD";
+            var mockStocksInfoService = new MockStocksInfoService();
             var mockLogger = new MockLogger();
 
-            //Act
-            var vm = new MainViewModel(mockStockInfoService, mockLogger);
+            // Act
+            var vm = new MainViewModel(mockStocksInfoService, mockLogger);
             vm.Symbol = symbol;
             vm.ConsultarPreciosCommand.Execute(null);
 
-            //Assert
-            Assert.AreEqual("Ooops!", vm.Status);
-            Assert.IsTrue(mockStockInfoService.GetStockRefactor);
+            // Assert
+            Assert.AreEqual($"Servicio no disponible", vm.Status);
+            Assert.IsTrue(mockStocksInfoService.GetStockInfonvoked);
             Assert.IsTrue(mockLogger.ErrorInvoked);
         }
     }
