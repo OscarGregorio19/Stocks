@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -45,8 +46,9 @@ namespace Stocks.ViewModels
             }
         }
 
-        private StocksInfo[] stocksInfo;
-        public StocksInfo[] StocksInfo
+
+        private ObservableCollection<StocksInfo> stocksInfo;
+        public ObservableCollection<StocksInfo> StocksInfo
         {
             get { return stocksInfo; }
             set
@@ -75,14 +77,17 @@ namespace Stocks.ViewModels
 
             try
             {
-                StocksInfo = await stocksInfoService.GetStocksInfo(Symbol);
-                if (StocksInfo == null)
+                var results = await stocksInfoService.GetStocksInfo(Symbol);
+                
+                if (results != null)
                 {
-                    Status = $"Símbolo '{Symbol}' no encontrado";
+                    StocksInfo = new ObservableCollection<StocksInfo>(results);
+                    Status = "Done!";
                 }
                 else
                 {
-                    Status = "Done!";
+                    StocksInfo = null;
+                    Status = $"Símbolo '{Symbol}' no encontrado";
                 }
             }
             catch (Exception ex)
